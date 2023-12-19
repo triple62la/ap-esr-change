@@ -1,6 +1,6 @@
 import tkinter as tk
 from storage import app_storage
-
+from ..fixed_entry import FixedEntry
 
 def setup_credentials(app, init_login, init_passw, init_remeber_passw):
 
@@ -12,9 +12,13 @@ def setup_credentials(app, init_login, init_passw, init_remeber_passw):
             app_storage.write("password", "")
 
     def handle_check_click(evt:tk.Event) -> None:
-
+        #значения переменной чекбокса не обновляются до окончания срабатывания ивента, поэтому логика инвертирована
         app_storage.write("remember_passw", not remember_passw.get())
-        handle_passw_save(evt)
+        if not remember_passw.get():
+            app_storage.write("password", passw_input.get())
+        else:
+            app_storage.write("password", "")
+
 
     def handle_login_save(evt:tk.Event):
 
@@ -28,10 +32,10 @@ def setup_credentials(app, init_login, init_passw, init_remeber_passw):
     label.grid(column=0, row=0, columnspan=2)
     login_label= tk.Label(frame, text="Логин")
     login_label.grid(column=0, row=1)
-    login_input = tk.Entry(frame, textvariable=login_var)
+    login_input = FixedEntry(frame, textvariable=login_var)
     login_input.grid(column=1, row=1)
     passw_label = tk.Label(frame, text="Пароль")
-    passw_input = tk.Entry(frame, show="*", textvariable=passw_var)
+    passw_input = FixedEntry(frame, show="*", textvariable=passw_var)
     passw_label.grid(column=0, row=2)
     passw_input.grid(column=1, row=2)
     frame.config(padx=5, pady=10, borderwidth=1, relief=tk.SOLID)
